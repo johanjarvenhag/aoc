@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	data, _ := os.ReadFile("input.txt")
+	data, _ := os.ReadFile("test.txt")
 	dataString := string(data)
 	lines := strings.Split(dataString, "\n")
 
@@ -38,7 +38,7 @@ func part1(lines []string) int {
 // 6638
 func part2(lines []string) int {
 	sum := 0
-	dialPosition := 50
+	dialPosition := 68
 
 	for _, line := range lines {
 		zeroHits := 0
