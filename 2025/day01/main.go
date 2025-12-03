@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	data, _ := os.ReadFile("test.txt")
+	data, _ := os.ReadFile("input.txt")
 	dataString := string(data)
 	lines := strings.Split(dataString, "\n")
 
@@ -38,7 +38,7 @@ func part1(lines []string) int {
 // 6638
 func part2(lines []string) int {
 	sum := 0
-	dialPosition := 68
+	dialPosition := 50
 
 	for _, line := range lines {
 		zeroHits := 0
@@ -92,93 +92,14 @@ func turnDial(pos int, cmd string) (int, int) {
 		if pos+diff >= 100 {
 			// crosses zero
 			incZeroHit()
+
 			return pos + diff - 100, zeroHits
 		}
+
 		return pos + diff, zeroHits
 
 	default:
+
 		return pos, zeroHits
 	}
-}
-
-func turnDialRefactored(pos int, cmd string) (int, int) {
-	if len(cmd) < 2 {
-		return pos, 0
-	}
-
-	dir := cmd[0]
-	steps, err := strconv.Atoi(cmd[1:])
-	if err != nil {
-		return pos, 0
-	}
-
-	zeroHits := steps / 100
-	diff := steps % 100
-	startedOnZero := pos == 0
-
-	// Determine signed movement
-	var shift int
-	switch dir {
-	case 'L':
-		shift = -diff
-	case 'R':
-		shift = diff
-	default:
-		return pos, zeroHits
-	}
-
-	// Compute new position
-	newPos := (pos + shift + 100) % 100
-
-	// Determine if we crossed 0 in the *remainder* movement
-	crossedZero := false
-
-	switch dir {
-	case 'L':
-		// Left: crossing happens if diff > pos, OR if diff == pos (lands exactly on zero)
-		crossedZero = diff >= pos && diff != 0
-
-	case 'R':
-		// Right: crossing happens if wrap occurs
-		crossedZero = pos+diff >= 100 && diff != 0
-	}
-
-	if crossedZero && !startedOnZero {
-		zeroHits++
-	}
-
-	return newPos, zeroHits
-}
-
-func turnDialShort(pos int, cmd string) (int, int) {
-	if len(cmd) < 2 {
-		return pos, 0
-	}
-
-	steps, _ := strconv.Atoi(cmd[1:])
-	diff := steps % 100
-	hits := steps / 100
-	startZero := pos == 0
-	dir := cmd[0]
-
-	var newPos int
-	var cross bool
-
-	if diff > 0 {
-		if dir == 'L' {
-			cross = diff >= pos
-			newPos = (pos - diff + 100) % 100
-		} else {
-			cross = pos+diff >= 100
-			newPos = (pos + diff) % 100
-		}
-	} else {
-		newPos = pos
-	}
-
-	if cross && !startZero {
-		hits++
-	}
-
-	return newPos, hits
 }
